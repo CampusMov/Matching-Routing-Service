@@ -1,5 +1,6 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.controllers;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetAllCarpoolsByDriverIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetCarpoolByDriverIdAndIsActiveQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetCarpoolByIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.CarpoolCommandService;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,5 +49,15 @@ public class CarpoolControllerImpl implements CarpoolController {
         if (carpool.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         var carpoolResource = CarpoolResourceFromEntityAssembler.toResourceFromEntity(carpool.get());
         return new ResponseEntity<>(carpoolResource, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Collection<CarpoolResource>> getAllCarpoolsByDriverId(String driverId) {
+        var query = new GetAllCarpoolsByDriverIdQuery(new DriverId(driverId));
+        var carpools = carpoolQueryService.handle(query);
+        var carpoolResources = carpools.stream()
+                .map(CarpoolResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return new ResponseEntity<>(carpoolResources, HttpStatus.OK);
     }
 }

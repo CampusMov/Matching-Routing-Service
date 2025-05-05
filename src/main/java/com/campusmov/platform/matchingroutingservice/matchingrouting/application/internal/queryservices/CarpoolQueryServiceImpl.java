@@ -1,6 +1,7 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.queryservices;
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetAllCarpoolsByDriverIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetCarpoolByDriverIdAndIsActiveQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetCarpoolByIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
@@ -9,6 +10,7 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.infrastruct
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,5 +31,10 @@ public class CarpoolQueryServiceImpl implements CarpoolQueryService {
                 ECarpoolStatus.IN_PROGRESS
         );
         return carpoolRepository.findByDriverIdAndStatusIn(query.driverId(), carpoolStatusesForActive);
+    }
+
+    @Override
+    public Collection<Carpool> handle(GetAllCarpoolsByDriverIdQuery query) {
+        return carpoolRepository.findAllByDriverId(query.driverId());
     }
 }
