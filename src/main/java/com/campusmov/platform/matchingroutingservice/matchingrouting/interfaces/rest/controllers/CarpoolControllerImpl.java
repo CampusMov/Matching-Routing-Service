@@ -1,6 +1,8 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.controllers;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetCarpoolByIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.CarpoolCommandService;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.CarpoolQueryService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CarpoolResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreateCarpoolResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.swagger.CarpoolController;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CarpoolControllerImpl implements CarpoolController {
     private final CarpoolCommandService carpoolCommandService;
+    private final CarpoolQueryService carpoolQueryService;
 
     @Override
     public ResponseEntity<CarpoolResource> createCarpool(CreateCarpoolResource resource) {
@@ -23,5 +26,14 @@ public class CarpoolControllerImpl implements CarpoolController {
         if (carpool.isEmpty() || carpool.get().getId().isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         var carpoolResource = CarpoolResourceFromEntityAssembler.toResourceFromEntity(carpool.get());
         return new ResponseEntity<>(carpoolResource, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<CarpoolResource> getCarpoolById(String carpoolId) {
+        var query = new GetCarpoolByIdQuery(carpoolId);
+        var carpool = carpoolQueryService.handle(query);
+        if (carpool.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        var carpoolResource = CarpoolResourceFromEntityAssembler.toResourceFromEntity(carpool.get());
+        return new ResponseEntity<>(carpoolResource, HttpStatus.OK);
     }
 }
