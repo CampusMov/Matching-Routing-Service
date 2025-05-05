@@ -1,9 +1,12 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto;
 
+import lombok.Builder;
+
+@Builder
 public record CreateLocationResource(
         String name,
         String address,
-        Integer x,
-        Integer y
+        Double longitude,
+        Double latitude
 ) {
 }

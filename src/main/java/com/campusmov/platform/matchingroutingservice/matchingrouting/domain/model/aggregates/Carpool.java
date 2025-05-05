@@ -41,7 +41,8 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
     @AttributeOverrides({
             @AttributeOverride(name = "name",      column = @Column(name = "origin_name")),
             @AttributeOverride(name = "address",   column = @Column(name = "origin_address")),
-            @AttributeOverride(name = "coordinates", column = @Column(name = "origin_coordinates"))
+            @AttributeOverride(name = "longitude", column = @Column(name = "origin_longitude")),
+            @AttributeOverride(name = "latitude",  column = @Column(name = "origin_latitude"))
     })
     private Location origin;
 
@@ -49,7 +50,8 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
     @AttributeOverrides({
             @AttributeOverride(name = "name",      column = @Column(name = "dest_name")),
             @AttributeOverride(name = "address",   column = @Column(name = "dest_address")),
-            @AttributeOverride(name = "coordinates", column = @Column(name = "dest_coordinates"))
+            @AttributeOverride(name = "longitude", column = @Column(name = "dest_longitude")),
+            @AttributeOverride(name = "latitude",  column = @Column(name = "dest_latitude"))
     })
     private Location destination;
 
@@ -71,9 +73,9 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this();
         this.driverId = command.driverId();
         this.vehicleId = command.vehicleId();
-        this.maxPassengers = command.maxPassengers();
+        this.maxPassengers = command.maxPassengers() == null ? 0 : command.maxPassengers();
         this.scheduleId = command.scheduleId();
-        this.radius = command.radius();
+        this.radius = command.radius() == null ? 50 : command.radius();
         this.origin = command.origin();
         this.destination = command.destination();
     }

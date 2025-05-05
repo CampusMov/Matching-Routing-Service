@@ -24,11 +24,15 @@ public class Location {
     private String address;
 
     @NotNull
-    private Point coordinates;
+    private Double longitude;
+
+    @NotNull
+    private Double latitude;
 
     public Location() {
         this.name = Strings.EMPTY;
         this.address = Strings.EMPTY;
-        this.coordinates = new Point(0, 0);
+        this.longitude = 0.0;
+        this.latitude = 0.0;
     }
 }
