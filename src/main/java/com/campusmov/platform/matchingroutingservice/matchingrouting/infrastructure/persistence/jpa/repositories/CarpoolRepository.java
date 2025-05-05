@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface CarpoolRepository extends JpaRepository<Carpool, String> {
+    Boolean existsByDriverIdAndStatusIn(DriverId driverId, List<ECarpoolStatus> statuses);
     Optional<Carpool> findByDriverIdAndStatusIn(DriverId driverId, List<ECarpoolStatus> status);
     Collection<Carpool> findAllByDriverId(DriverId driverId);
 }
