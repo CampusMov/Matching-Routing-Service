@@ -17,6 +17,11 @@ public class CarpoolCommandServiceImpl implements CarpoolCommandService {
     @Override
     public Optional<Carpool> handle(CreateCarpoolCommand command) {
         Carpool newCarpool = new Carpool(command);
+        // TODO: Implement the logic to check if the driver is already in a carpool (HIGH)
+        // TODO: Consume the profile service to check if the vehicle belongs to the driver (LOW)
+        // TODO: Consume the profile service to get the vehicle information (LOW)
+        // TODO: Implement the logic to check if maximum passengers are reached (MEDIUM)
+
         try {
             carpoolRepository.save(newCarpool);
         } catch (Exception e) {
