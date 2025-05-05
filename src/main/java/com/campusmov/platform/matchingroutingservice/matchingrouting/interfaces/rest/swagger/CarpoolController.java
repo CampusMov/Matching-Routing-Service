@@ -29,4 +29,12 @@ public interface CarpoolController {
             @ApiResponse(responseCode = "404", description = "Carpool not found"),
     })
     ResponseEntity<CarpoolResource> getCarpoolById(@PathVariable String carpoolId);
+
+    @GetMapping("/driver/{driverId}/active")
+    @Operation(summary = "Get active carpool by driver ID", description = "Get active carpool by driver ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Active carpool found"),
+            @ApiResponse(responseCode = "404", description = "Active carpool not found"),
+    })
+    ResponseEntity<CarpoolResource> getActiveCarpoolByDriverId(@PathVariable String driverId);
 }
