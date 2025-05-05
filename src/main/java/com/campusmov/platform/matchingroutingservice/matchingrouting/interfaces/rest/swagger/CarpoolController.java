@@ -2,6 +2,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CarpoolResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreateCarpoolResource;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreateLocationResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -47,4 +48,12 @@ public interface CarpoolController {
             @ApiResponse(responseCode = "404", description = "No carpools found"),
     })
     ResponseEntity<Collection<CarpoolResource>> getAllCarpoolsByDriverId(@PathVariable String driverId);
+
+    @PostMapping("/available")
+    @Operation(summary = "Get all available carpools by schedule ID and pickup location", description = "Get all available carpools by schedule ID and pickup location")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All available carpools found"),
+            @ApiResponse(responseCode = "404", description = "No available carpools found"),
+    })
+    ResponseEntity<Collection<CarpoolResource>> getAvailableCarpools(@RequestParam String scheduleId, @RequestBody CreateLocationResource resource);
 }
