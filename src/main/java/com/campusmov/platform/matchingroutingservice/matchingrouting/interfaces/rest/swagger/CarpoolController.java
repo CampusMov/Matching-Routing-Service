@@ -7,9 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -23,4 +23,28 @@ public interface CarpoolController {
             @ApiResponse(responseCode = "400", description = "Invalid request"),
     })
     ResponseEntity<CarpoolResource> createCarpool(@RequestBody CreateCarpoolResource resource);
+
+    @GetMapping("/{carpoolId}")
+    @Operation(summary = "Get carpool by ID", description = "Get carpool by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Carpool found"),
+            @ApiResponse(responseCode = "404", description = "Carpool not found"),
+    })
+    ResponseEntity<CarpoolResource> getCarpoolById(@PathVariable String carpoolId);
+
+    @GetMapping("/driver/{driverId}/active")
+    @Operation(summary = "Get active carpool by driver ID", description = "Get active carpool by driver ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Active carpool found"),
+            @ApiResponse(responseCode = "404", description = "Active carpool not found"),
+    })
+    ResponseEntity<CarpoolResource> getActiveCarpoolByDriverId(@PathVariable String driverId);
+
+    @GetMapping("/driver/{driverId}")
+    @Operation(summary = "Get all carpools by driver ID", description = "Get all carpools by driver ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All carpools found"),
+            @ApiResponse(responseCode = "404", description = "No carpools found"),
+    })
+    ResponseEntity<Collection<CarpoolResource>> getAllCarpoolsByDriverId(@PathVariable String driverId);
 }
