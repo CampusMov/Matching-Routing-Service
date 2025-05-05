@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(value = "/carpools", produces = APPLICATION_JSON_VALUE)
@@ -37,4 +39,12 @@ public interface CarpoolController {
             @ApiResponse(responseCode = "404", description = "Active carpool not found"),
     })
     ResponseEntity<CarpoolResource> getActiveCarpoolByDriverId(@PathVariable String driverId);
+
+    @GetMapping("/driver/{driverId}")
+    @Operation(summary = "Get all carpools by driver ID", description = "Get all carpools by driver ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All carpools found"),
+            @ApiResponse(responseCode = "404", description = "No carpools found"),
+    })
+    ResponseEntity<Collection<CarpoolResource>> getAllCarpoolsByDriverId(@PathVariable String driverId);
 }
