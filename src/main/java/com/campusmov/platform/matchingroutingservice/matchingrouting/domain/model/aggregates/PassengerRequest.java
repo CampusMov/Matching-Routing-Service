@@ -48,4 +48,11 @@ public class PassengerRequest extends AuditableAbstractAggregateRoot<PassengerRe
         this.pickupLocation = command.pickupLocation();
         this.requestedSeats = command.requestedSeats() == null ? 1 : command.requestedSeats();
     }
+
+    public void accept() {
+        if (this.status != EPassengerRequestStatus.PENDING) {
+            throw new IllegalStateException("Passenger request cannot be accepted in status: " + this.status);
+        }
+        this.status = EPassengerRequestStatus.ACCEPTED;
+    }
 }
