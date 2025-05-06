@@ -56,4 +56,12 @@ public interface CarpoolController {
             @ApiResponse(responseCode = "404", description = "No available carpools found"),
     })
     ResponseEntity<Collection<CarpoolResource>> getAvailableCarpools(@RequestParam String scheduleId, @RequestBody CreateLocationResource resource);
+
+    @PostMapping("/{carpoolId}/start")
+    @Operation(summary = "Start a carpool", description = "Start a carpool")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Carpool started successfully"),
+            @ApiResponse(responseCode = "404", description = "Carpool not found"),
+    })
+    ResponseEntity<CarpoolResource> startCarpool(@PathVariable String carpoolId, @RequestBody CreateLocationResource resource);
 }

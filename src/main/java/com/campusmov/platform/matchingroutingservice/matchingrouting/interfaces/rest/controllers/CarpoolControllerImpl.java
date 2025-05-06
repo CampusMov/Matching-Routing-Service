@@ -12,6 +12,7 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.CarpoolResourceFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.CreateCarpoolCommandFromResourceAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.GetAllAvailableCarpoolsByScheduleIdAndPickUpLocationQueryFromResourceAssembler;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.StartCarpoolCommandFromResourceAssembler;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.DriverId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -73,5 +74,16 @@ public class CarpoolControllerImpl implements CarpoolController {
                 .map(CarpoolResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
         return new ResponseEntity<>(carpoolResources, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<CarpoolResource> startCarpool(
+            String carpoolId,
+            CreateLocationResource resource) {
+        var command = StartCarpoolCommandFromResourceAssembler.toCommandFromResource(carpoolId, resource);
+        var carpool = carpoolCommandService.handle(command);
+        if (carpool.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        var carpoolResource = CarpoolResourceFromEntityAssembler.toResourceFromEntity(carpool.get());
+        return new ResponseEntity<>(carpoolResource, HttpStatus.OK);
     }
 }
