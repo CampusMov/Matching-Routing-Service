@@ -30,10 +30,10 @@ class CarpoolControllerIntegrationTest {
         // Given
         CreateCarpoolResource createCarpoolResource = CreateCarpoolResource
                 .builder()
-                .driverId("12345678-1234-5678-1234-567812345678")
-                .vehicleId("87654321-4321-8765-4321-876543214321")
+                .driverId("12345678-1234-5678-1234-5123123123678")
+                .vehicleId("87654321-4321-8765-4321-1231231231231")
                 .maxPassengers(4)
-                .scheduleId("12345678-1234-5678-1234-567812345678")
+                .scheduleId("12345678-1234-5678-1234-1231312334")
                 .radius(10)
                 .origin(CreateLocationResource.builder()
                         .name("Origin Location")
@@ -62,10 +62,10 @@ class CarpoolControllerIntegrationTest {
         // Given
         CreateCarpoolResource createCarpoolResource = CreateCarpoolResource
                 .builder()
-                .driverId("12345678-1234-5678-1234-567812345678")
-                .vehicleId("87654321-4321-8765-4321-876543214321")
+                .driverId("12345678-1234-5678-1234-3452345235")
+                .vehicleId("87654321-4321-8765-4321-34525435523452345")
                 .maxPassengers(null)
-                .scheduleId("12345678-1234-5678-1234-567812345678")
+                .scheduleId("12345678-1234-5678-1234-2345756675756")
                 .radius(null)
                 .origin(CreateLocationResource.builder()
                         .name("Origin Location")
@@ -101,10 +101,10 @@ class CarpoolControllerIntegrationTest {
         // Given
         CreateCarpoolResource createCarpoolResource = CreateCarpoolResource
                 .builder()
-                .driverId("12345678-1234-5678-1234-567812345678")
-                .vehicleId("87654321-4321-8765-4321-876543214321")
+                .driverId("12345678-3645-5678-1234-567812345678")
+                .vehicleId("87654321-7968-8765-4321-876543214321")
                 .maxPassengers(4)
-                .scheduleId("12345678-1234-5678-1234-567812345678")
+                .scheduleId("12345678-6789-5678-1234-567812345678")
                 .radius(10)
                 .origin(null)
                 .destination(CreateLocationResource.builder()
@@ -127,8 +127,8 @@ class CarpoolControllerIntegrationTest {
         // Given
         CreateCarpoolResource createCarpoolResource = CreateCarpoolResource
                 .builder()
-                .driverId("12345678-1234-5678-1234-567812345678")
-                .vehicleId("87654321-4321-8765-4321-876543214321")
+                .driverId("12345678-1234-2435-1234-567812345678")
+                .vehicleId("87654321-4321-2535-4321-876543214321")
                 .maxPassengers(4)
                 .scheduleId("12345678-1234-5678-1234-567812345678")
                 .radius(10)
