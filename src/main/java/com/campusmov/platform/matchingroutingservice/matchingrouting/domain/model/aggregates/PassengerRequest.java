@@ -50,9 +50,16 @@ public class PassengerRequest extends AuditableAbstractAggregateRoot<PassengerRe
     }
 
     public void accept() {
-        if (this.status != EPassengerRequestStatus.PENDING) {
-            throw new IllegalStateException("Passenger request cannot be accepted in status: " + this.status);
-        }
+        if (!this.isPending()) throw new IllegalStateException("Passenger request cannot be accepted in status: " + this.status);
         this.status = EPassengerRequestStatus.ACCEPTED;
+    }
+
+    public void reject() {
+        if (!this.isPending()) throw new IllegalStateException("Passenger request cannot be rejected in status: " + this.status);
+        this.status = EPassengerRequestStatus.REJECTED;
+    }
+
+    private Boolean isPending() {
+        return this.status == EPassengerRequestStatus.PENDING;
     }
 }
