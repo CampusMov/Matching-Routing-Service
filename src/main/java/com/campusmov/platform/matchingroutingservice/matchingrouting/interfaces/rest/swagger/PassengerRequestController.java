@@ -32,4 +32,12 @@ public interface PassengerRequestController {
             @ApiResponse(responseCode = "404", description = "Passenger request not found"),
     })
     ResponseEntity<PassengerRequestResource> acceptPassengerRequest(@PathVariable String passengerRequestId);
+
+    @PostMapping("/{passengerRequestId}/reject")
+    @Operation(summary = "Reject a passenger request", description = "Reject a passenger request")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Passenger request rejected successfully"),
+            @ApiResponse(responseCode = "404", description = "Passenger request not found"),
+    })
+    ResponseEntity<PassengerRequestResource> rejectPassengerRequest(@PathVariable String passengerRequestId);
 }
