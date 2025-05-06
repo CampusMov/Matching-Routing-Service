@@ -2,7 +2,9 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.AcceptPassengerRequestCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.RejectPassengerRequestCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetPassengerRequestByIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.PassengerRequestCommandService;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.PassengerRequestQueryService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreatePassengerRequestResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.PassengerRequestResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.swagger.PassengerRequestController;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PassengerRequestControllerImpl implements PassengerRequestController {
     private final PassengerRequestCommandService passengerRequestCommandService;
+    private final PassengerRequestQueryService passengerRequestQueryService;
 
     @Override
     public ResponseEntity<PassengerRequestResource> createPassengerRequest(CreatePassengerRequestResource resource) {
@@ -42,6 +45,15 @@ public class PassengerRequestControllerImpl implements PassengerRequestControlle
         var rejectedPassengerRequest = passengerRequestCommandService.handle(command);
         if (rejectedPassengerRequest.isEmpty() || rejectedPassengerRequest.get().getId().isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         var passengerRequestResource = PassengerRequestResourceFromEntityAssembler.toResourceFromEntity(rejectedPassengerRequest.get());
+        return new ResponseEntity<>(passengerRequestResource, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PassengerRequestResource> getPassengerRequestById(String passengerRequestId) {
+        var query = new GetPassengerRequestByIdQuery(passengerRequestId);
+        var passengerRequest = passengerRequestQueryService.handle(query);
+        if (passengerRequest.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        var passengerRequestResource = PassengerRequestResourceFromEntityAssembler.toResourceFromEntity(passengerRequest.get());
         return new ResponseEntity<>(passengerRequestResource, HttpStatus.OK);
     }
 }
