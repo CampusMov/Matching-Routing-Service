@@ -34,6 +34,7 @@ public class PassengerRequestCommandServiceImpl implements PassengerRequestComma
                 .orElseThrow(() -> new IllegalArgumentException("Passenger Request with ID %s not found".formatted(command.passengerRequestId())));
         // TODO: Implement the logic to check if the requested seats are less than the available seats (MEDIUM)
         passengerRequest.accept();
+        // TODO: Cancel the other requests of the passenger for the same route of schedule (MEDIUM)
         try {
             passengerRequestRepository.save(passengerRequest);
         } catch (Exception e) {
