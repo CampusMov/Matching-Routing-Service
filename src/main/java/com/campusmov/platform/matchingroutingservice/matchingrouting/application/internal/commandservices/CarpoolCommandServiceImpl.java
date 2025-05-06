@@ -2,6 +2,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.applicatio
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.StartCarpoolCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.CarpoolCommandService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.infrastructure.persistence.jpa.repositories.CarpoolRepository;
@@ -34,5 +35,19 @@ public class CarpoolCommandServiceImpl implements CarpoolCommandService {
             throw new RuntimeException("Error saving carpool", e);
         }
         return Optional.of(newCarpool);
+    }
+
+    @Override
+    public Optional<Carpool> handle(StartCarpoolCommand command) {
+        Carpool carpool = carpoolRepository
+                .findById(command.carpoolId())
+                .orElseThrow(() -> new IllegalArgumentException("Carpool with ID %s not found".formatted(command.carpoolId())));
+        carpool.start(command.currentLocation());
+        try {
+            carpoolRepository.save(carpool);
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving carpool", e);
+        }
+        return Optional.of(carpool);
     }
 }

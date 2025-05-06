@@ -79,4 +79,45 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.origin = command.origin();
         this.destination = command.destination();
     }
+
+    private Boolean isAvailableToStart() {
+        return this.status == ECarpoolStatus.CREATED;
+    }
+
+    private Boolean isAtOriginLocation(Location location) {
+        final int MAX_RADIUS_METERS_TO_ORIGIN = 20;
+        return this.isWithinRadius(this.origin, location, MAX_RADIUS_METERS_TO_ORIGIN);
+    }
+
+    public void start(Location currentLocation) {
+        if (!isAvailableToStart()) throw new IllegalArgumentException("Carpool with ID %s is not allowed to start".formatted(this.getId()));
+        if (!isAtOriginLocation(currentLocation)) throw new IllegalArgumentException("Carpool with ID %s is not at the origin location".formatted(this.getId()));
+        this.status = ECarpoolStatus.IN_PROGRESS;
+    }
+
+    private Double haversineDistanceMeters(Location loc1, Location loc2) {
+        final int EARTH_RADIUS_METERS = 6_371_000;
+
+        double deltaLatRad = Math.toRadians(loc2.getLatitude() - loc1.getLatitude());
+        double deltaLngRad = Math.toRadians(loc2.getLongitude() - loc1.getLongitude());
+
+        double sinHalfDeltaLat = Math.sin(deltaLatRad / 2);
+        double sinHalfDeltaLng = Math.sin(deltaLngRad / 2);
+
+        double haversineFormula = sinHalfDeltaLat * sinHalfDeltaLat
+                + Math.cos(Math.toRadians(loc1.getLatitude()))
+                * Math.cos(Math.toRadians(loc2.getLatitude()))
+                * sinHalfDeltaLng * sinHalfDeltaLng;
+
+        double angularDistance = 2 * Math.atan2(
+                Math.sqrt(haversineFormula),
+                Math.sqrt(1 - haversineFormula)
+        );
+
+        return EARTH_RADIUS_METERS * angularDistance;
+    }
+
+    private Boolean isWithinRadius(Location loc1, Location loc2, Integer radius) {
+        return haversineDistanceMeters(loc1, loc2) <= radius;
+    }
 }
