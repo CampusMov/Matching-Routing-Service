@@ -1,5 +1,6 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.controllers;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.AcceptPassengerRequestCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.PassengerRequestCommandService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreatePassengerRequestResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.PassengerRequestResource;
@@ -23,5 +24,14 @@ public class PassengerRequestControllerImpl implements PassengerRequestControlle
         if (passengerRequest.isEmpty() || passengerRequest.get().getId().isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         var passengerRequestResource = PassengerRequestResourceFromEntityAssembler.toResourceFromEntity(passengerRequest.get());
         return new ResponseEntity<>(passengerRequestResource, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<PassengerRequestResource> acceptPassengerRequest(String passengerRequestId) {
+        var command = new AcceptPassengerRequestCommand(passengerRequestId);
+        var passengerRequest = passengerRequestCommandService.handle(command);
+        if (passengerRequest.isEmpty() || passengerRequest.get().getId().isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        var passengerRequestResource = PassengerRequestResourceFromEntityAssembler.toResourceFromEntity(passengerRequest.get());
+        return new ResponseEntity<>(passengerRequestResource, HttpStatus.OK);
     }
 }
