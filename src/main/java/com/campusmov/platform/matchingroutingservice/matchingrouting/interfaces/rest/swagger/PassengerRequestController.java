@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(value = "/passenger-requests", produces = APPLICATION_JSON_VALUE)
@@ -45,4 +47,12 @@ public interface PassengerRequestController {
             @ApiResponse(responseCode = "404", description = "Passenger request not found"),
     })
     ResponseEntity<PassengerRequestResource> getPassengerRequestById(@PathVariable String passengerRequestId);
+
+    @GetMapping()
+    @Operation(summary = "Get all passenger requests by carpool ID", description = "Get all passenger requests by carpool ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Passenger requests found"),
+            @ApiResponse(responseCode = "404", description = "Passenger requests not found"),
+    })
+    ResponseEntity<Collection<PassengerRequestResource>> getPassengerRequestsByCarpoolId(@RequestParam String carpoolId);
 }

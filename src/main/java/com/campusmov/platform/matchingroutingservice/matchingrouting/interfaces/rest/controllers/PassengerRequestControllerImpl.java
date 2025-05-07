@@ -2,6 +2,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.AcceptPassengerRequestCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.RejectPassengerRequestCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetAllPassengerRequestsByCarpoolIdAndStatusIsPendingQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetPassengerRequestByIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.PassengerRequestCommandService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.PassengerRequestQueryService;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,5 +58,15 @@ public class PassengerRequestControllerImpl implements PassengerRequestControlle
         if (passengerRequest.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         var passengerRequestResource = PassengerRequestResourceFromEntityAssembler.toResourceFromEntity(passengerRequest.get());
         return new ResponseEntity<>(passengerRequestResource, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Collection<PassengerRequestResource>> getPassengerRequestsByCarpoolId(String carpoolId) {
+        var query = new GetAllPassengerRequestsByCarpoolIdAndStatusIsPendingQuery(carpoolId);
+        var passengerRequests = passengerRequestQueryService.handle(query);
+        var passengerRequestResources = passengerRequests.stream()
+                .map(PassengerRequestResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return new ResponseEntity<>(passengerRequestResources, HttpStatus.OK);
     }
 }
