@@ -1,6 +1,8 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates;
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.entities.LinkedPassenger;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.Location;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -11,6 +13,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -58,6 +63,9 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
     @NotNull
     private Boolean isVisible;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "carpool")
+    private Collection<LinkedPassenger> linkedPassengers;
+
     public Carpool(){
         super();
         this.status = ECarpoolStatus.CREATED;
@@ -67,6 +75,7 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.origin = new Location();
         this.destination = new Location();
         this.isVisible = true;
+        this.linkedPassengers = new ArrayList<>();
     }
 
     public Carpool(CreateCarpoolCommand command) {
@@ -74,6 +83,7 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.driverId = command.driverId();
         this.vehicleId = command.vehicleId();
         this.maxPassengers = command.maxPassengers() == null ? 0 : command.maxPassengers();
+        this.availableSeats = this.maxPassengers;
         this.scheduleId = command.scheduleId();
         this.radius = command.radius() == null ? 50 : command.radius();
         this.origin = command.origin();
@@ -119,5 +129,29 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
 
     private Boolean isWithinRadius(Location loc1, Location loc2, Integer radius) {
         return haversineDistanceMeters(loc1, loc2) <= radius;
+    }
+
+    public void addLinkedPassenger(CreateLinkedPassengerCommand command) {
+        if (isPassengerAlreadyLinked(command.passengerId().passengerId())) throw new IllegalArgumentException("Passenger with ID %s is already linked to this carpool".formatted(command.passengerId().passengerId()));
+        if (!isThereAvailableSeats()) throw new IllegalArgumentException("Carpool with ID %s has no available seats".formatted(this.getId()));
+        if (!hasAvailableSeatsToCoverRequestedSeats(command.requestedSeats())) throw new IllegalArgumentException("Carpool with ID %s has not enough available seats to cover the requested seats".formatted(this.getId()));
+        LinkedPassenger linkedPassenger = new LinkedPassenger(this, command);
+        this.linkedPassengers.add(linkedPassenger);
+    }
+
+    private Boolean isPassengerAlreadyLinked(String passengerId) {
+        return this.linkedPassengers.stream().anyMatch(lp -> lp.getPassengerId().passengerId().equals(passengerId));
+    }
+
+    private Boolean isThereAvailableSeats() {
+        return this.availableSeats > 0;
+    }
+
+    private Boolean hasAvailableSeatsToCoverRequestedSeats(Integer requestedSeats) {
+        return this.availableSeats >= requestedSeats;
+    }
+
+    private void sendAddLinkedPassengerRejectedEvent(String passengerId) {
+        //
     }
 }
