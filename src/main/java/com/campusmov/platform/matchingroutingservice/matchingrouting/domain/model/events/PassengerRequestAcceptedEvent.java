@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record PassengerRequestAcceptedEvent(
         String passengerRequestId,
+        String carpoolId,
         String passengerId,
         String pickupLocationName,
         String pickupLocationAddress,

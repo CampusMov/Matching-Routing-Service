@@ -69,6 +69,7 @@ public class PassengerRequest extends AuditableAbstractAggregateRoot<PassengerRe
         registerEvent(PassengerRequestAcceptedEvent
                 .builder()
                 .passengerRequestId(this.getId())
+                .carpoolId(this.carpoolId.carpoolId())
                 .passengerId(this.passengerId.passengerId())
                 .pickupLocationName(this.pickupLocation.getName())
                 .pickupLocationAddress(this.pickupLocation.getAddress())
