@@ -1,6 +1,7 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates;
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreatePassengerRequestCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.PassengerRequestAcceptedEvent;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.EPassengerRequestStatus;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.Location;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -52,6 +53,7 @@ public class PassengerRequest extends AuditableAbstractAggregateRoot<PassengerRe
     public void accept() {
         if (!this.isPending()) throw new IllegalStateException("Passenger request cannot be accepted in status: " + this.status);
         this.status = EPassengerRequestStatus.ACCEPTED;
+        this.sendPassengerAcceptedEvent();
     }
 
     public void reject() {
@@ -61,5 +63,20 @@ public class PassengerRequest extends AuditableAbstractAggregateRoot<PassengerRe
 
     private Boolean isPending() {
         return this.status == EPassengerRequestStatus.PENDING;
+    }
+
+    private void sendPassengerAcceptedEvent(){
+        registerEvent(PassengerRequestAcceptedEvent
+                .builder()
+                .passengerRequestId(this.getId())
+                .carpoolId(this.carpoolId.carpoolId())
+                .passengerId(this.passengerId.passengerId())
+                .pickupLocationName(this.pickupLocation.getName())
+                .pickupLocationAddress(this.pickupLocation.getAddress())
+                .pickupLocationLongitude(this.pickupLocation.getLongitude())
+                .pickupLocationLatitude(this.pickupLocation.getLatitude())
+                .requestedSeats(this.requestedSeats)
+                .status(this.status.toString())
+                .build());
     }
 }
