@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.campusmov.platform</groupId>
-    <artifactId>Matching-Routing-Service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>matching-routing-service</artifactId>
+    <version>1.1.0</version>
     <name>Matching-Routing-Service</name>
     <description>Matching-Routing-Service</description>
     <url/>
@@ -27,8 +27,9 @@
         <url/>
     </scm>
     <properties>
-        <java.version>22</java.version>
+        <java.version>21</java.version>
         <spring-cloud.version>2024.0.1</spring-cloud.version>
+        <dockerPassword>dockerPassword</dockerPassword>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -162,6 +163,21 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <image>
+                        <builder>paketobuildpacks/builder-jammy-java-tiny:latest</builder>
+                        <name>jhosepmyr/uni-ride_${project.artifactId}:${project.version}</name>
+                        <publish>true</publish>
+                        <env>
+                            <BP_JVM_VERSION>21</BP_JVM_VERSION>
+                            <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
+                        </env>
+                    </image>
+                    <docker>
+                        <publishRegistry>
+                            <username>jhosepmyr</username>
+                            <password>${dockerPassword}</password>
+                        </publishRegistry>
+                    </docker>
                 </configuration>
             </plugin>
         </plugins>
