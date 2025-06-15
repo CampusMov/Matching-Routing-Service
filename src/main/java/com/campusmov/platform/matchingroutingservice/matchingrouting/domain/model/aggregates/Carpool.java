@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -59,6 +60,12 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
             @AttributeOverride(name = "latitude",  column = @Column(name = "dest_latitude"))
     })
     private Location destination;
+
+    @NotNull
+    private LocalDateTime startedClassTime;
+
+    @NotNull
+    private LocalDateTime endedClassTime;
 
     @NotNull
     private Boolean isVisible;
