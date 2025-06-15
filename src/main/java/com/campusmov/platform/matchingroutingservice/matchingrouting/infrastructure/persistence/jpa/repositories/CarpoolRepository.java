@@ -16,5 +16,13 @@ public interface CarpoolRepository extends JpaRepository<Carpool, String> {
     Boolean existsByDriverIdAndStatusIn(DriverId driverId, List<ECarpoolStatus> statuses);
     Optional<Carpool> findByDriverIdAndStatusIn(DriverId driverId, List<ECarpoolStatus> status);
     Collection<Carpool> findAllByDriverId(DriverId driverId);
-    Collection<Carpool> findAllByScheduleIdInAndStatusIn(Collection<ScheduleId> scheduleIds, List<ECarpoolStatus> status);
+    Collection<Carpool> findAllByOriginLatitudeAndOriginLongitudeAndDestinationLatitudeAndDestinationLongitudeAndAvailableSeatsGreaterThanEqualAndStatusIn(
+            Double originLatitude,
+            Double originLongitude,
+            Double destinationLatitude,
+            Double destinationLongitude,
+            Integer availableSeats,
+            List<ECarpoolStatus> status
+    );
+
 }
