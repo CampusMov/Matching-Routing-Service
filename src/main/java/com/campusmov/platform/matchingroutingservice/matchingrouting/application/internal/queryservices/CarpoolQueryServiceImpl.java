@@ -44,11 +44,11 @@ public class CarpoolQueryServiceImpl implements CarpoolQueryService {
                 ECarpoolStatus.CREATED,
                 ECarpoolStatus.IN_PROGRESS
         );
-        return carpoolRepository.findAllByOriginLatitudeAndOriginLongitudeAndDestinationLatitudeAndDestinationLongitudeAndAvailableSeatsGreaterThanEqualAndStatusIn(
-                query.origin().getLatitude(),
-                query.origin().getLongitude(),
+        return carpoolRepository.findAllByDestinationLatitudeAndDestinationLongitudeAndStartedClassTimeAndClassDayAndAvailableSeatsGreaterThanEqualAndStatusIn(
                 query.destination().getLatitude(),
                 query.destination().getLongitude(),
+                query.startedClassTime(),
+                query.classDay(),
                 query.requestedSeats(),
                 carpoolStatusesForActive
         );
