@@ -26,10 +26,6 @@ public class CarpoolCommandServiceImpl implements CarpoolCommandService {
                 newCarpool.getDriverId(), carpoolStatusesForActive
         );
         if (isDriverAlreadyInCarpool) throw new IllegalArgumentException("Driver is already in an active carpool");
-        // TODO: Consume the profile service to check if the vehicle belongs to the driver (LOW)
-        // TODO: Consume the profile service to get the vehicle information (LOW)
-        // TODO: Implement the logic to check if maximum passengers are reached (MEDIUM)
-
         try {
             carpoolRepository.save(newCarpool);
         } catch (Exception e) {
