@@ -3,6 +3,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CarpoolResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreateCarpoolResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreateLocationResource;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.SearchAvailableCarpoolsResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -50,12 +51,12 @@ public interface CarpoolController {
     ResponseEntity<Collection<CarpoolResource>> getAllCarpoolsByDriverId(@PathVariable String driverId);
 
     @PostMapping("/available")
-    @Operation(summary = "Get all available carpools by schedule ID and pickup location", description = "Get all available carpools by schedule ID and pickup location")
+    @Operation(summary = "Search all available carpools by schedule time and locations", description = "Search all available carpools by schedule time and locations")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All available carpools found"),
             @ApiResponse(responseCode = "404", description = "No available carpools found"),
     })
-    ResponseEntity<Collection<CarpoolResource>> getAvailableCarpools(@RequestParam String scheduleId, @RequestBody CreateLocationResource resource);
+    ResponseEntity<Collection<CarpoolResource>> searchAvailableCarpools(@RequestBody SearchAvailableCarpoolsResource resource);
 
     @PostMapping("/{carpoolId}/start")
     @Operation(summary = "Start a carpool", description = "Start a carpool")

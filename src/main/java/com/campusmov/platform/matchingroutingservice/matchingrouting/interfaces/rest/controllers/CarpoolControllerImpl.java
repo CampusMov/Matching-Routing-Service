@@ -8,11 +8,9 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.serv
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CarpoolResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreateCarpoolResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.CreateLocationResource;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.SearchAvailableCarpoolsResource;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.swagger.CarpoolController;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.CarpoolResourceFromEntityAssembler;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.CreateCarpoolCommandFromResourceAssembler;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.GetAllAvailableCarpoolsByScheduleIdAndPickUpLocationQueryFromResourceAssembler;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.StartCarpoolCommandFromResourceAssembler;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform.*;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.DriverId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -65,10 +63,8 @@ public class CarpoolControllerImpl implements CarpoolController {
     }
 
     @Override
-    public ResponseEntity<Collection<CarpoolResource>> getAvailableCarpools(
-            String scheduleId,
-            CreateLocationResource resource) {
-        var query = GetAllAvailableCarpoolsByScheduleIdAndPickUpLocationQueryFromResourceAssembler.toQueryFromResource(scheduleId, resource);
+    public ResponseEntity<Collection<CarpoolResource>> searchAvailableCarpools(SearchAvailableCarpoolsResource resource) {
+        var query = SearchAvailableCarpoolsQueryFromResourceAssembler.toQueryFromResource(resource);
         var carpools = carpoolQueryService.handle(query);
         var carpoolResources = carpools.stream()
                 .map(CarpoolResourceFromEntityAssembler::toResourceFromEntity)

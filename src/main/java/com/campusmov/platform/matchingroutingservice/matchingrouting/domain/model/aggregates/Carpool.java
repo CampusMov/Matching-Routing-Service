@@ -4,6 +4,7 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mode
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.entities.LinkedPassenger;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.EDay;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.Location;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.DriverId;
@@ -14,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -61,6 +63,16 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
     private Location destination;
 
     @NotNull
+    private LocalDateTime startedClassTime;
+
+    @NotNull
+    private LocalDateTime endedClassTime;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private EDay classDay;
+
+    @NotNull
     private Boolean isVisible;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "carpool")
@@ -82,12 +94,35 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this();
         this.driverId = command.driverId();
         this.vehicleId = command.vehicleId();
-        this.maxPassengers = command.maxPassengers() == null ? 0 : command.maxPassengers();
-        this.availableSeats = this.maxPassengers;
+        verifyMaxPassengers(command.maxPassengers());
         this.scheduleId = command.scheduleId();
-        this.radius = command.radius() == null ? 50 : command.radius();
+        verifyRadius(command.radius());
         this.origin = command.origin();
         this.destination = command.destination();
+        this.startedClassTime = command.startedClassTime();
+        this.endedClassTime = command.endedClassTime();
+        this.classDay = command.classDay();
+    }
+
+    private void verifyMaxPassengers(Integer maxPassengers) {
+        if (maxPassengers == null || maxPassengers <= 0) {
+            throw new IllegalArgumentException("Max passengers must be greater than zero");
+        }
+        if (maxPassengers > 4) {
+            throw new IllegalArgumentException("Max passengers cannot exceed 4");
+        }
+        this.maxPassengers = maxPassengers;
+        this.availableSeats = maxPassengers; // Initialize available seats to max passengers
+    }
+
+    private void verifyRadius(Integer radius) {
+        if (radius == null || radius <= 0) {
+            throw new IllegalArgumentException("Radius must be greater than zero");
+        }
+        if (radius > 100) {
+            throw new IllegalArgumentException("Radius cannot exceed 100 meters");
+        }
+        this.radius = radius;
     }
 
     private Boolean isAvailableToStart() {
