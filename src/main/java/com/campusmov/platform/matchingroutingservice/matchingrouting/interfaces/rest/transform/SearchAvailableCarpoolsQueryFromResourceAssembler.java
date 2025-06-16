@@ -1,6 +1,7 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.transform;
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.SearchAvailableCarpoolsQuery;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.EDay;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.Location;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.dto.SearchAvailableCarpoolsResource;
 
@@ -21,6 +22,7 @@ public class SearchAvailableCarpoolsQueryFromResourceAssembler {
                         .latitude(resource.destinationLatitude())
                         .build())
                 .requestedSeats(resource.requestedSeats())
+                .classDay(EDay.fromString(resource.classDay()))
                 .build();
     }
 }

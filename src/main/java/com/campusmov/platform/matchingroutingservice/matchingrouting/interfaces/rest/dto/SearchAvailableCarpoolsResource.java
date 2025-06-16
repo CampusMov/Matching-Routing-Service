@@ -15,6 +15,7 @@ public record SearchAvailableCarpoolsResource(
         String destinationAddress,
         Double destinationLongitude,
         Double destinationLatitude,
-        Integer requestedSeats
+        Integer requestedSeats,
+        String classDay
 ) {
 }
