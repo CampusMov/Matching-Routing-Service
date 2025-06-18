@@ -5,10 +5,11 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mode
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Builder
 public record SearchAvailableCarpoolsQuery(
-        LocalDateTime startedClassTime,
+        LocalTime startedClassTime,
         EDay classDay,
         Location origin,
         Location destination,

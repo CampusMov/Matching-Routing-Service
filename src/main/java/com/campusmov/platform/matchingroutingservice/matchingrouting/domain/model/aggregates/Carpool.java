@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -63,10 +63,10 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
     private Location destination;
 
     @NotNull
-    private LocalDateTime startedClassTime;
+    private LocalTime startedClassTime;
 
     @NotNull
-    private LocalDateTime endedClassTime;
+    private LocalTime endedClassTime;
 
     @NotNull
     @Enumerated(EnumType.STRING)

@@ -7,7 +7,7 @@ import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueob
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.VehicleId;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Builder
 public record CreateCarpoolCommand(
@@ -18,8 +18,8 @@ public record CreateCarpoolCommand(
         Integer radius,
         Location origin,
         Location destination,
-        LocalDateTime startedClassTime,
-        LocalDateTime endedClassTime,
+        LocalTime startedClassTime,
+        LocalTime endedClassTime,
         EDay classDay
 ) {
 }
