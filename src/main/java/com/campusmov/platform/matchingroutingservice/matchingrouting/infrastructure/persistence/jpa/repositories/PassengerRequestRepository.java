@@ -3,6 +3,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.infrastruc
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.PassengerRequest;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.EPassengerRequestStatus;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.CarpoolId;
+import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.PassengerId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,5 @@ import java.util.Collection;
 @Repository
 public interface PassengerRequestRepository extends JpaRepository<PassengerRequest, String> {
     Collection<PassengerRequest> findAllByCarpoolIdAndStatusIs(CarpoolId carpoolId, EPassengerRequestStatus status);
+    Collection<PassengerRequest> findAllByPassengerId(PassengerId passengerId);
 }

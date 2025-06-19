@@ -1,8 +1,10 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.rest.controllers;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.PassengerRequest;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.AcceptPassengerRequestCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.RejectPassengerRequestCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetAllPassengerRequestsByCarpoolIdAndStatusIsPendingQuery;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetAllPassengerRequestsByPassengerIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetPassengerRequestByIdQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.PassengerRequestCommandService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.PassengerRequestQueryService;
@@ -14,9 +16,11 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,9 +65,20 @@ public class PassengerRequestControllerImpl implements PassengerRequestControlle
     }
 
     @Override
-    public ResponseEntity<Collection<PassengerRequestResource>> getPassengerRequestsByCarpoolId(String carpoolId) {
-        var query = new GetAllPassengerRequestsByCarpoolIdAndStatusIsPendingQuery(carpoolId);
-        var passengerRequests = passengerRequestQueryService.handle(query);
+    public ResponseEntity<Collection<PassengerRequestResource>> getPassengerRequestsByParams(String carpoolId, String passengerId) {
+        int filled = 0;
+        if (StringUtils.hasText(carpoolId)) filled++;
+        if (StringUtils.hasText(passengerId)) filled++;
+        if (filled != 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Collection<PassengerRequest> passengerRequests = Collections.emptyList();
+        if (StringUtils.hasText(carpoolId)) {
+            var query = new GetAllPassengerRequestsByCarpoolIdAndStatusIsPendingQuery(carpoolId);
+            passengerRequests = passengerRequestQueryService.handle(query);
+        }
+        if (StringUtils.hasText(passengerId)) {
+            var query = new GetAllPassengerRequestsByPassengerIdQuery(passengerId);
+            passengerRequests = passengerRequestQueryService.handle(query);
+        }
         var passengerRequestResources = passengerRequests.stream()
                 .map(PassengerRequestResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
