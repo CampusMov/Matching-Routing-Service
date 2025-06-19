@@ -5,15 +5,8 @@ import lombok.Builder;
 import java.time.LocalTime;
 
 @Builder
-public record CarpoolResource(
-        String id,
-        String driverId,
-        String vehicleId,
-        String status,
-        Integer availableSeats,
-        Integer maxPassengers,
-        String scheduleId,
-        Integer radius,
+public record SearchAvailableCarpoolsResource(
+        LocalTime startedClassTime,
         String originName,
         String originAddress,
         Double originLongitude,
@@ -22,9 +15,7 @@ public record CarpoolResource(
         String destinationAddress,
         Double destinationLongitude,
         Double destinationLatitude,
-        LocalTime startedClassTime,
-        LocalTime endedClassTime,
-        String classDay,
-        Boolean isVisible
+        Integer requestedSeats,
+        String classDay
 ) {
 }

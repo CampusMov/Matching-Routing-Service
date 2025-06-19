@@ -1,10 +1,7 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.queryservices;
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetAllAvailableCarpoolsByScheduleIdAndPickUpLocationQuery;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetAllCarpoolsByDriverIdQuery;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetCarpoolByDriverIdAndIsActiveQuery;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetCarpoolByIdQuery;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.*;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.CarpoolQueryService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.infrastructure.persistence.jpa.repositories.CarpoolRepository;
@@ -41,17 +38,18 @@ public class CarpoolQueryServiceImpl implements CarpoolQueryService {
     }
 
     @Override
-    public Collection<Carpool> handle(GetAllAvailableCarpoolsByScheduleIdAndPickUpLocationQuery query) {
-        // TODO: Consume the profile service to get all the schedules of drivers which match the given scheduleId of the passenger
-        Collection<ScheduleId> listOfMatchingSchedulesIds = List.of();
+    public Collection<Carpool> handle(SearchAvailableCarpoolsQuery query) {
         var carpoolStatusesForActive = List.of(
                 ECarpoolStatus.CREATED,
                 ECarpoolStatus.IN_PROGRESS
         );
-        Collection<Carpool> carpools = carpoolRepository.findAllByScheduleIdInAndStatusIn(listOfMatchingSchedulesIds, carpoolStatusesForActive);
-        if (carpools.isEmpty()) return List.of();
-        // TODO: Consume the location service to filter the carpools by the pick up location
-        Collection<Carpool> filteredCarpools = List.of();
-        return filteredCarpools;
+        return carpoolRepository.findAllByDestinationLatitudeAndDestinationLongitudeAndStartedClassTimeAndClassDayAndAvailableSeatsGreaterThanEqualAndStatusIn(
+                query.destination().getLatitude(),
+                query.destination().getLongitude(),
+                query.startedClassTime(),
+                query.classDay(),
+                query.requestedSeats(),
+                carpoolStatusesForActive
+        );
     }
 }
