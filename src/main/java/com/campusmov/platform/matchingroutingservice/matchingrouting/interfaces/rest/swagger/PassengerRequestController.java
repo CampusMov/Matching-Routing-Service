@@ -54,5 +54,5 @@ public interface PassengerRequestController {
             @ApiResponse(responseCode = "200", description = "Passenger requests found"),
             @ApiResponse(responseCode = "404", description = "Passenger requests not found"),
     })
-    ResponseEntity<Collection<PassengerRequestResource>> getPassengerRequestsByCarpoolId(@RequestParam String carpoolId);
+    ResponseEntity<Collection<PassengerRequestResource>> getPassengerRequestsByParams(@RequestParam(required = false) String carpoolId, @RequestParam(required = false) String passengerId);
 }
