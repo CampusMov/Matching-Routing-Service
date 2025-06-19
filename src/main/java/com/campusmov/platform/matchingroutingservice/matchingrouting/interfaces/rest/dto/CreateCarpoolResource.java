@@ -2,7 +2,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Builder
 public record CreateCarpoolResource(
@@ -13,8 +13,8 @@ public record CreateCarpoolResource(
         Integer radius,
         CreateLocationResource origin,
         CreateLocationResource destination,
-        LocalDateTime startedClassTime,
-        LocalDateTime endedClassTime,
+        LocalTime startedClassTime,
+        LocalTime endedClassTime,
         String classDay
 ) {
 }

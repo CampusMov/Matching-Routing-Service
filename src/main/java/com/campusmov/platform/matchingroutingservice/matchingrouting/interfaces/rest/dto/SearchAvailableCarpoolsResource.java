@@ -2,11 +2,11 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Builder
 public record SearchAvailableCarpoolsResource(
-        LocalDateTime startedClassTime,
+        LocalTime startedClassTime,
         String originName,
         String originAddress,
         Double originLongitude,

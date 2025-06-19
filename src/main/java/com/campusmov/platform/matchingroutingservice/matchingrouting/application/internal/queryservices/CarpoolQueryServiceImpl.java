@@ -39,7 +39,6 @@ public class CarpoolQueryServiceImpl implements CarpoolQueryService {
 
     @Override
     public Collection<Carpool> handle(SearchAvailableCarpoolsQuery query) {
-        Collection<ScheduleId> listOfMatchingSchedulesIds = List.of();
         var carpoolStatusesForActive = List.of(
                 ECarpoolStatus.CREATED,
                 ECarpoolStatus.IN_PROGRESS
