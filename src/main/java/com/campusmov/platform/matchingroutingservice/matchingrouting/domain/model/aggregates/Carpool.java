@@ -104,7 +104,7 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.classDay = command.classDay();
     }
 
-    private void verifyMaxPassengers(Integer maxPassengers) {
+    public void verifyMaxPassengers(Integer maxPassengers) {
         if (maxPassengers == null || maxPassengers <= 0) {
             throw new IllegalArgumentException("Max passengers must be greater than zero");
         }
@@ -115,7 +115,7 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.availableSeats = maxPassengers; // Initialize available seats to max passengers
     }
 
-    private void verifyRadius(Integer radius) {
+    public void verifyRadius(Integer radius) {
         if (radius == null || radius <= 0) {
             throw new IllegalArgumentException("Radius must be greater than zero");
         }
@@ -140,7 +140,7 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.status = ECarpoolStatus.IN_PROGRESS;
     }
 
-    private Double haversineDistanceMeters(Location loc1, Location loc2) {
+    public Double haversineDistanceMeters(Location loc1, Location loc2) {
         final int EARTH_RADIUS_METERS = 6_371_000;
 
         double deltaLatRad = Math.toRadians(loc2.getLatitude() - loc1.getLatitude());
