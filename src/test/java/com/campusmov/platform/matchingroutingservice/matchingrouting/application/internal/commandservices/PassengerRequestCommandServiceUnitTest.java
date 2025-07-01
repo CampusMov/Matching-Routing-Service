@@ -1,5 +1,6 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.commandservices;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.PassengerRequestWebSocketPublisherService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.PassengerRequest;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.AcceptPassengerRequestCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreatePassengerRequestCommand;
@@ -28,6 +29,9 @@ class PassengerRequestCommandServiceUnitTest {
     @Mock
     private PassengerRequestRepository passengerRequestRepository;
 
+    @Mock
+    private PassengerRequestWebSocketPublisherService passengerRequestWebSocketPublisherService;
+
     @Captor
     private ArgumentCaptor<PassengerRequest> passengerRequestCaptor;
 
@@ -41,7 +45,7 @@ class PassengerRequestCommandServiceUnitTest {
 
     @BeforeEach
     void setUp() {
-        passengerRequestCommandService = new PassengerRequestCommandServiceImpl(passengerRequestRepository);
+        passengerRequestCommandService = new PassengerRequestCommandServiceImpl(passengerRequestRepository, passengerRequestWebSocketPublisherService);
 
         existingPassengerRequest = new PassengerRequest();
         existingPassengerRequest.setId(PASSENGER_REQUEST_ID);
