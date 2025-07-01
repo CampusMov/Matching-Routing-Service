@@ -1,5 +1,8 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.commandservices;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.PassengerRequestWebSocketPublisherService;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.PassengerRequestAcceptedPayloadFromEntityAssembler;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.PassengerRequestRejectedPayloadFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.PassengerRequest;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.AcceptPassengerRequestCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreatePassengerRequestCommand;
@@ -15,6 +18,7 @@ import java.util.Optional;
 @Service
 public class PassengerRequestCommandServiceImpl implements PassengerRequestCommandService {
     private final PassengerRequestRepository passengerRequestRepository;
+    private final PassengerRequestWebSocketPublisherService passengerRequestWebSocketPublisherService;
 
     @Override
     public Optional<PassengerRequest> handle(CreatePassengerRequestCommand command) {
@@ -35,8 +39,10 @@ public class PassengerRequestCommandServiceImpl implements PassengerRequestComma
                 .orElseThrow(() -> new IllegalArgumentException("Passenger Request with ID %s not found".formatted(command.passengerRequestId())));
         // TODO: Implement the logic to check if the requested seats are less than the available seats (MEDIUM)
         passengerRequest.accept();
+        var passengerRequestAcceptedPayload = PassengerRequestAcceptedPayloadFromEntityAssembler.fromEntity(passengerRequest);
         try {
             passengerRequestRepository.save(passengerRequest);
+            passengerRequestWebSocketPublisherService.handleAcceptPassengerRequest(passengerRequestAcceptedPayload);
         } catch (Exception e) {
             throw new RuntimeException("Error saving passenger request", e);
         }
@@ -48,8 +54,10 @@ public class PassengerRequestCommandServiceImpl implements PassengerRequestComma
         PassengerRequest passengerRequest = passengerRequestRepository.findById(command.passengerRequestId())
                 .orElseThrow(() -> new IllegalArgumentException("Passenger Request with ID %s not found".formatted(command.passengerRequestId())));
         passengerRequest.reject();
+        var passengerRequestRejectedPayload = PassengerRequestRejectedPayloadFromEntityAssembler.fromEntity(passengerRequest);
         try {
             passengerRequestRepository.save(passengerRequest);
+            passengerRequestWebSocketPublisherService.handleRejectPassengerRequest(passengerRequestRejectedPayload);
         } catch (Exception e) {
             throw new RuntimeException("Error saving passenger request", e);
         }
