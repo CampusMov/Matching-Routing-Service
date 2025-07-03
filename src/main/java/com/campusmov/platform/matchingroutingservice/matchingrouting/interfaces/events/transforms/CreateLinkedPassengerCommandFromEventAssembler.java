@@ -8,9 +8,9 @@ import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueob
 public class CreateLinkedPassengerCommandFromEventAssembler {
     public static CreateLinkedPassengerCommand toCommandFromEvent(PassengerRequestAcceptedEvent event) {
         return CreateLinkedPassengerCommand.builder()
-                .passengerId(new PassengerId(event.passengerId()))
-                .carpoolId(new CarpoolId(event.carpoolId()))
-                .requestedSeats(event.requestedSeats())
+                .passengerId(new PassengerId(event.getPassengerId()))
+                .carpoolId(new CarpoolId(event.getCarpoolId()))
+                .requestedSeats(event.getRequestedSeats())
                 .build();
     }
 }
