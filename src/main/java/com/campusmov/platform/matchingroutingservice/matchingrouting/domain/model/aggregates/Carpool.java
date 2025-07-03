@@ -3,6 +3,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mod
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.entities.LinkedPassenger;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.LinkedPassengerCreatedEvent;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.EDay;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.Location;
@@ -172,6 +173,8 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         if (!hasAvailableSeatsToCoverRequestedSeats(command.requestedSeats())) throw new IllegalArgumentException("Carpool with ID %s has not enough available seats to cover the requested seats".formatted(this.getId()));
         LinkedPassenger linkedPassenger = new LinkedPassenger(this, command);
         this.linkedPassengers.add(linkedPassenger);
+        LinkedPassengerCreatedEvent event = linkedPassenger.sendLinkedPassengerCreatedEvent();
+        this.registerEvent(event);
     }
 
     private Boolean isPassengerAlreadyLinked(String passengerId) {
