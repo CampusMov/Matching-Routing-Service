@@ -1,5 +1,6 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.commandservices;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.CarpoolWebSocketPublisherService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
@@ -29,6 +30,9 @@ class CarpoolCommandServiceImplUnitTest {
     @Mock
     private CarpoolRepository carpoolRepository;
 
+    @Mock
+    private CarpoolWebSocketPublisherService carpoolWebSocketPublisherService;
+
     @Captor
     private ArgumentCaptor<Carpool> carpoolArgumentCaptor;
 
@@ -41,7 +45,7 @@ class CarpoolCommandServiceImplUnitTest {
 
     @BeforeEach
     void setUp() {
-        carpoolCommandService = new CarpoolCommandServiceImpl(carpoolRepository);
+        carpoolCommandService = new CarpoolCommandServiceImpl(carpoolRepository, carpoolWebSocketPublisherService);
 
         existingCarpool = new Carpool();
         existingCarpool.setId(CARPOOL_ID);
