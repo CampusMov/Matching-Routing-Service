@@ -3,6 +3,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mod
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.entities.LinkedPassenger;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.CarpoolCreatedEvent;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.LinkedPassengerCreatedEvent;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.EDay;
@@ -187,6 +188,21 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
 
     private Boolean hasAvailableSeatsToCoverRequestedSeats(Integer requestedSeats) {
         return this.availableSeats >= requestedSeats;
+    }
+
+    public void sendCarpoolCreatedEvent() {
+        CarpoolCreatedEvent event = new CarpoolCreatedEvent(
+                this.getId(),
+                this.driverId.driverId(),
+                this.vehicleId.vehicleId(),
+                this.scheduleId.scheduleId(),
+                this.status.name(),
+                this.radius,
+                this.origin,
+                this.destination,
+                this.isVisible
+        );
+        this.registerEvent(event);
     }
 
     private void sendAddLinkedPassengerRejectedEvent(String passengerId) {

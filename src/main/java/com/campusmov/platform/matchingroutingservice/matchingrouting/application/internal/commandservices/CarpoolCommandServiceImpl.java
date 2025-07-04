@@ -31,6 +31,8 @@ public class CarpoolCommandServiceImpl implements CarpoolCommandService {
         if (isDriverAlreadyInCarpool) throw new IllegalArgumentException("Driver is already in an active carpool");
         try {
             carpoolRepository.save(newCarpool);
+            newCarpool.sendCarpoolCreatedEvent();
+            carpoolRepository.save(newCarpool);
         } catch (Exception e) {
             throw new RuntimeException("Error saving carpool", e);
         }
