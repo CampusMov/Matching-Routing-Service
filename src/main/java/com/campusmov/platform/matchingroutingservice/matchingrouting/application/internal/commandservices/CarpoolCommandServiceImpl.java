@@ -1,5 +1,7 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.commandservices;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.CarpoolWebSocketPublisherService;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.CarpoolStartedPayloadFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @Service
 public class CarpoolCommandServiceImpl implements CarpoolCommandService {
     private final CarpoolRepository carpoolRepository;
+    private final CarpoolWebSocketPublisherService carpoolWebSocketPublisherService;
 
     @Override
     public Optional<Carpool> handle(CreateCarpoolCommand command) {
@@ -40,8 +43,10 @@ public class CarpoolCommandServiceImpl implements CarpoolCommandService {
                 .findById(command.carpoolId())
                 .orElseThrow(() -> new IllegalArgumentException("Carpool with ID %s not found".formatted(command.carpoolId())));
         carpool.start(command.currentLocation());
+        var carpoolStartedPayload = CarpoolStartedPayloadFromEntityAssembler.fromEntity(carpool);
         try {
             carpoolRepository.save(carpool);
+            carpoolWebSocketPublisherService.handleStartedCarpool(carpoolStartedPayload);
         } catch (Exception e) {
             throw new RuntimeException("Error saving carpool", e);
         }
