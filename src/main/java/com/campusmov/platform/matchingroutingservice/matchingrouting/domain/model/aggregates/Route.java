@@ -77,12 +77,13 @@ public class Route extends AuditableAbstractAggregateRoot<Route> {
         this.carpoolCurrentLocation = command.origin();
     }
 
-    public void addWayPoint(CreateWayPointCommand command) {
+    public WayPoint addWayPoint(CreateWayPointCommand command) {
         if (isPassengerInRoute(command.passengerId().passengerId())) {
             throw new IllegalArgumentException("Passenger is already in the route.");
         }
         WayPoint wayPoint = new WayPoint(this, command);
         this.wayPoints.add(wayPoint);
+        return wayPoint;
     }
 
     private Boolean isPassengerInRoute(String passengerId) {
