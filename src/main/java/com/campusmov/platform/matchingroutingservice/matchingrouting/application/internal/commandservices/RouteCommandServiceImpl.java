@@ -2,6 +2,8 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.applicatio
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Route;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateRouteCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateWayPointCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.entities.WayPoint;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.RouteCommandService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.infrastructure.persistence.jpa.repositories.RouteRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,21 @@ public class RouteCommandServiceImpl implements RouteCommandService {
         try {
             routeRepository.save(newRoute);
         } catch (Exception e) {
-            throw new RuntimeException("Error saving route", e);
+            throw new IllegalArgumentException("Error saving route", e);
         }
         return Optional.of(newRoute);
+    }
+
+    @Override
+    public Optional<WayPoint> handle(CreateWayPointCommand command) {
+        Route route = routeRepository.findByCarpoolId(command.carpoolId())
+                .orElseThrow(() -> new IllegalArgumentException("Route with carpool ID %s not found".formatted(command.carpoolId())));
+        WayPoint wayPoint = route.addWayPoint(command);
+        try {
+            routeRepository.save(route);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error saving way point", e);
+        }
+        return Optional.of(wayPoint);
     }
 }
