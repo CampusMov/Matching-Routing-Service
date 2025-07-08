@@ -2,6 +2,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.applicatio
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.PassengerRequestWebSocketPublisherService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.PassengerRequestAcceptedPayloadFromEntityAssembler;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.PassengerRequestCreatedPayloadFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.PassengerRequestRejectedPayloadFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.PassengerRequest;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.AcceptPassengerRequestCommand;
@@ -26,11 +27,13 @@ public class PassengerRequestCommandServiceImpl implements PassengerRequestComma
         // TODO: Implement the logic to check if maximum passengers are reached (MEDIUM)
         // TODO: Implement the logic to check if the requested seats are less than the available seats (MEDIUM)
         try {
-            passengerRequestRepository.save(newPassengerRequest);
+            PassengerRequest savedPassengerRequest = passengerRequestRepository.save(newPassengerRequest);
+            var passengerRequestCreatedPayload = PassengerRequestCreatedPayloadFromEntityAssembler.fromEntity(savedPassengerRequest);
+            passengerRequestWebSocketPublisherService.handleCreatePassengerRequest(passengerRequestCreatedPayload);
+            return Optional.of(savedPassengerRequest);
         } catch (Exception e) {
             throw new RuntimeException("Error saving passenger request", e);
         }
-        return Optional.of(newPassengerRequest);
     }
 
     @Override
