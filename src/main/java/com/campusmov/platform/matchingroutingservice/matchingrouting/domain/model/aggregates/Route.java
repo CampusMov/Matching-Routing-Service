@@ -2,6 +2,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mod
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateRouteCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateWayPointCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.UpdateCurrentLocationRouteCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.entities.WayPoint;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.Location;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -75,6 +76,17 @@ public class Route extends AuditableAbstractAggregateRoot<Route> {
         this.origin = command.origin();
         this.destination = command.destination();
         this.carpoolCurrentLocation = command.origin();
+    }
+
+    public void updateCurrentLocation(UpdateCurrentLocationRouteCommand command) {
+        if (command.currentLocation().getName() != null)
+            this.carpoolCurrentLocation.setName(command.currentLocation().getName());
+        if (command.currentLocation().getAddress() != null)
+            this.carpoolCurrentLocation.setAddress(command.currentLocation().getAddress());
+        if (command.currentLocation().getLongitude() != null)
+            this.carpoolCurrentLocation.setLongitude(command.currentLocation().getLongitude());
+        if (command.currentLocation().getLatitude() != null)
+            this.carpoolCurrentLocation.setLatitude(command.currentLocation().getLatitude());
     }
 
     public WayPoint addWayPoint(CreateWayPointCommand command) {
