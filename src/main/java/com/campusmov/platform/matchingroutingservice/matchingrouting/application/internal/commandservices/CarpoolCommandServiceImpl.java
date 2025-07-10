@@ -1,6 +1,7 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.commandservices;
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.CarpoolWebSocketPublisherService;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.CarpoolCompletedPayloadFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.CarpoolStartedPayloadFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
@@ -64,6 +65,8 @@ public class CarpoolCommandServiceImpl implements CarpoolCommandService {
         carpool.finish();
         try {
             var finishedCarpool = carpoolRepository.save(carpool);
+            var carpoolCompletedPayload = CarpoolCompletedPayloadFromEntityAssembler.fromEntity(finishedCarpool);
+            carpoolWebSocketPublisherService.handleCompletedCarpool(carpoolCompletedPayload);
             return Optional.of(finishedCarpool);
         } catch (Exception e) {
             throw new RuntimeException("Error saving carpool", e);

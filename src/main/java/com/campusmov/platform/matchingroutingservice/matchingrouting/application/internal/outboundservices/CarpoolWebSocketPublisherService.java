@@ -1,5 +1,6 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices;
 
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.payloads.CarpoolCompletedPayload;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.payloads.CarpoolStartedPayload;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.payloads.CarpoolCancelledPayload;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,10 @@ public class CarpoolWebSocketPublisherService {
     public void handleCancelledCarpool(CarpoolCancelledPayload carpoolCancelledPayload) {
         String destination = "/topic/carpool/" + carpoolCancelledPayload.id() + "/status";
         messagingTemplate.convertAndSend(destination, carpoolCancelledPayload);
+    }
+
+    public void handleCompletedCarpool(CarpoolCompletedPayload carpoolCompletedPayload) {
+        String destination = "/topic/carpool/" + carpoolCompletedPayload.id() + "/status";
+        messagingTemplate.convertAndSend(destination, carpoolCompletedPayload);
     }
 }
