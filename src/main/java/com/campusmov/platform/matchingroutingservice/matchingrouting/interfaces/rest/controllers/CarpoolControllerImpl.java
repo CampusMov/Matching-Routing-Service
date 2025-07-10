@@ -73,10 +73,17 @@ public class CarpoolControllerImpl implements CarpoolController {
     }
 
     @Override
-    public ResponseEntity<CarpoolResource> startCarpool(
-            String carpoolId,
-            CreateLocationResource resource) {
+    public ResponseEntity<CarpoolResource> startCarpool(String carpoolId, CreateLocationResource resource) {
         var command = StartCarpoolCommandFromResourceAssembler.toCommandFromResource(carpoolId, resource);
+        var carpool = carpoolCommandService.handle(command);
+        if (carpool.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        var carpoolResource = CarpoolResourceFromEntityAssembler.toResourceFromEntity(carpool.get());
+        return new ResponseEntity<>(carpoolResource, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<CarpoolResource> finishCarpool(String carpoolId) {
+        var command = FinishCarpoolCommandFromResourceAssembler.toCommandFromResource(carpoolId);
         var carpool = carpoolCommandService.handle(command);
         if (carpool.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         var carpoolResource = CarpoolResourceFromEntityAssembler.toResourceFromEntity(carpool.get());
