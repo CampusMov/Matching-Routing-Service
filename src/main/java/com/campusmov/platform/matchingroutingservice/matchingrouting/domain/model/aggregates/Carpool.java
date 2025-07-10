@@ -138,8 +138,14 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
 
     public void start(Location currentLocation) {
         if (!isAvailableToStart()) throw new IllegalArgumentException("Carpool with ID %s is not allowed to start".formatted(this.getId()));
-        if (!isAtOriginLocation(currentLocation)) throw new IllegalArgumentException("Carpool with ID %s is not at the origin location".formatted(this.getId()));
+        //if (!isAtOriginLocation(currentLocation)) throw new IllegalArgumentException("Carpool with ID %s is not at the origin location".formatted(this.getId()));
         this.status = ECarpoolStatus.IN_PROGRESS;
+    }
+
+    public void finish() {
+        if (this.status != ECarpoolStatus.IN_PROGRESS) throw new IllegalArgumentException("Carpool with ID %s is not in progress".formatted(this.getId()));
+        //if (!isAtDestinationLocation(currentLocation)) throw new IllegalArgumentException("Carpool with ID %s is not at the destination location".formatted(this.getId()));
+        this.status = ECarpoolStatus.COMPLETED;
     }
 
     public Double haversineDistanceMeters(Location loc1, Location loc2) {
