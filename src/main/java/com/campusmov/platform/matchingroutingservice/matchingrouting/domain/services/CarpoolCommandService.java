@@ -3,6 +3,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.domain.ser
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.FinishCarpoolCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.StartCarpoolCommand;
 
 import java.util.Optional;
@@ -10,5 +11,6 @@ import java.util.Optional;
 public interface CarpoolCommandService {
     Optional<Carpool> handle(CreateCarpoolCommand command);
     Optional<Carpool> handle(StartCarpoolCommand command);
+    Optional<Carpool> handle(FinishCarpoolCommand command);
     void handle(CreateLinkedPassengerCommand command);
 }

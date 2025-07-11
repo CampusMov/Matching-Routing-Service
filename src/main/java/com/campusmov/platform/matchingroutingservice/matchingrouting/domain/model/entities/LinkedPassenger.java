@@ -2,6 +2,7 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mod
 
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.LinkedPassengerCreatedEvent;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ELinkedPassengerStatus;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.entities.AuditableModel;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.PassengerId;
@@ -47,6 +48,15 @@ public class LinkedPassenger extends AuditableModel {
         this.carpool = carpool;
         this.passengerId = command.passengerId();
         this.requestedSeats = command.requestedSeats();
+    }
 
+    public LinkedPassengerCreatedEvent sendLinkedPassengerCreatedEvent() {
+        return new LinkedPassengerCreatedEvent(
+                this.getId(),
+                this.getCarpool().getId(),
+                this.getPassengerId().passengerId(),
+                this.getCarpool().getDriverId().driverId(),
+                this.getStatus().name()
+        );
     }
 }

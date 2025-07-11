@@ -1,6 +1,6 @@
 package com.campusmov.platform.matchingroutingservice.matchingrouting.infrastructure.brokers.kafka;
 
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.PassengerRequestEvent;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.CarpoolCreatedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -11,15 +11,15 @@ import java.util.Queue;
 import java.util.function.Supplier;
 
 @Configuration
-public class PassengerRequestEventSource {
+public class CarpoolCreatedEventSource {
     private final Queue<Message<?>> eventQueue = new LinkedList<>();
 
     @Bean
-    public Supplier<Message<?>> passengerRequestSupplier() {
+    public Supplier<Message<?>> carpoolCreatedSupplier() {
         return this.eventQueue::poll;
     }
 
-    public void publishEvent(PassengerRequestEvent event) {
+    public void publishCreatedEvent(CarpoolCreatedEvent event) {
         this.eventQueue.add(MessageBuilder.withPayload(event).build());
     }
 }

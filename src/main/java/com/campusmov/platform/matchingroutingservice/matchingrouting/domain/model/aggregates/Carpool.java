@@ -3,6 +3,8 @@ package com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mod
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.entities.LinkedPassenger;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.CarpoolCreatedEvent;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.events.LinkedPassengerCreatedEvent;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.EDay;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.Location;
@@ -104,7 +106,7 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.classDay = command.classDay();
     }
 
-    private void verifyMaxPassengers(Integer maxPassengers) {
+    public void verifyMaxPassengers(Integer maxPassengers) {
         if (maxPassengers == null || maxPassengers <= 0) {
             throw new IllegalArgumentException("Max passengers must be greater than zero");
         }
@@ -115,7 +117,7 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.availableSeats = maxPassengers; // Initialize available seats to max passengers
     }
 
-    private void verifyRadius(Integer radius) {
+    public void verifyRadius(Integer radius) {
         if (radius == null || radius <= 0) {
             throw new IllegalArgumentException("Radius must be greater than zero");
         }
@@ -136,11 +138,17 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
 
     public void start(Location currentLocation) {
         if (!isAvailableToStart()) throw new IllegalArgumentException("Carpool with ID %s is not allowed to start".formatted(this.getId()));
-        if (!isAtOriginLocation(currentLocation)) throw new IllegalArgumentException("Carpool with ID %s is not at the origin location".formatted(this.getId()));
+        //if (!isAtOriginLocation(currentLocation)) throw new IllegalArgumentException("Carpool with ID %s is not at the origin location".formatted(this.getId()));
         this.status = ECarpoolStatus.IN_PROGRESS;
     }
 
-    private Double haversineDistanceMeters(Location loc1, Location loc2) {
+    public void finish() {
+        if (this.status != ECarpoolStatus.IN_PROGRESS) throw new IllegalArgumentException("Carpool with ID %s is not in progress".formatted(this.getId()));
+        //if (!isAtDestinationLocation(currentLocation)) throw new IllegalArgumentException("Carpool with ID %s is not at the destination location".formatted(this.getId()));
+        this.status = ECarpoolStatus.COMPLETED;
+    }
+
+    public Double haversineDistanceMeters(Location loc1, Location loc2) {
         final int EARTH_RADIUS_METERS = 6_371_000;
 
         double deltaLatRad = Math.toRadians(loc2.getLatitude() - loc1.getLatitude());
@@ -172,6 +180,8 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         if (!hasAvailableSeatsToCoverRequestedSeats(command.requestedSeats())) throw new IllegalArgumentException("Carpool with ID %s has not enough available seats to cover the requested seats".formatted(this.getId()));
         LinkedPassenger linkedPassenger = new LinkedPassenger(this, command);
         this.linkedPassengers.add(linkedPassenger);
+        LinkedPassengerCreatedEvent event = linkedPassenger.sendLinkedPassengerCreatedEvent();
+        this.registerEvent(event);
     }
 
     private Boolean isPassengerAlreadyLinked(String passengerId) {
@@ -184,6 +194,21 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
 
     private Boolean hasAvailableSeatsToCoverRequestedSeats(Integer requestedSeats) {
         return this.availableSeats >= requestedSeats;
+    }
+
+    public void sendCarpoolCreatedEvent() {
+        CarpoolCreatedEvent event = new CarpoolCreatedEvent(
+                this.getId(),
+                this.driverId.driverId(),
+                this.vehicleId.vehicleId(),
+                this.scheduleId.scheduleId(),
+                this.status.name(),
+                this.radius,
+                this.origin,
+                this.destination,
+                this.isVisible
+        );
+        this.registerEvent(event);
     }
 
     private void sendAddLinkedPassengerRejectedEvent(String passengerId) {

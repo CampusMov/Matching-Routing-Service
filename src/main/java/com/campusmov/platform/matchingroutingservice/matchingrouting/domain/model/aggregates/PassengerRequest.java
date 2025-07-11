@@ -66,17 +66,17 @@ public class PassengerRequest extends AuditableAbstractAggregateRoot<PassengerRe
     }
 
     private void sendPassengerAcceptedEvent(){
-        registerEvent(PassengerRequestAcceptedEvent
-                .builder()
-                .passengerRequestId(this.getId())
-                .carpoolId(this.carpoolId.carpoolId())
-                .passengerId(this.passengerId.passengerId())
-                .pickupLocationName(this.pickupLocation.getName())
-                .pickupLocationAddress(this.pickupLocation.getAddress())
-                .pickupLocationLongitude(this.pickupLocation.getLongitude())
-                .pickupLocationLatitude(this.pickupLocation.getLatitude())
-                .requestedSeats(this.requestedSeats)
-                .status(this.status.toString())
-                .build());
+        PassengerRequestAcceptedEvent event = new  PassengerRequestAcceptedEvent(
+                this.getId(),
+                this.getCarpoolId().carpoolId(),
+                this.getPassengerId().passengerId(),
+                this.getPickupLocation().getName(),
+                this.getPickupLocation().getAddress(),
+                this.getPickupLocation().getLongitude(),
+                this.getPickupLocation().getLatitude(),
+                this.getRequestedSeats(),
+                this.status.name()
+        );
+        registerEvent(event);
     }
 }

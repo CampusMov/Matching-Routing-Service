@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.campusmov.platform</groupId>
     <artifactId>matching-routing-service</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0-test</version>
     <name>Matching-Routing-Service</name>
     <description>Matching-Routing-Service</description>
     <url/>
@@ -132,6 +132,19 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-neo4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>neo4j</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

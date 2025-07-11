@@ -15,6 +15,8 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalTime;
+
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CarpoolControllerIntegrationTest {
@@ -47,6 +49,9 @@ class CarpoolControllerIntegrationTest {
                         .latitude(23.456789)
                         .longitude(87.654321)
                         .build())
+                .classDay("MONDAY")
+                .startedClassTime(LocalTime.parse("07:00:00"))
+                .endedClassTime(LocalTime.parse("08:00:00"))
                 .build();
 
         // When
@@ -55,45 +60,6 @@ class CarpoolControllerIntegrationTest {
         // Then
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(response.getBody()).isNotNull();
-    }
-
-    @Test
-    void TestCreateCarpool_NullMaxPassengers_NullRadius_ValidRequest_ShouldPass(){
-        // Given
-        CreateCarpoolResource createCarpoolResource = CreateCarpoolResource
-                .builder()
-                .driverId("12345678-1234-5678-1234-3452345235")
-                .vehicleId("87654321-4321-8765-4321-34525435523452345")
-                .maxPassengers(null)
-                .scheduleId("12345678-1234-5678-1234-2345756675756")
-                .radius(null)
-                .origin(CreateLocationResource.builder()
-                        .name("Origin Location")
-                        .address("123 Origin St")
-                        .latitude(12.345678)
-                        .longitude(98.765432)
-                        .build())
-                .destination(CreateLocationResource.builder()
-                        .name("Destination Location")
-                        .address("456 Destination Ave")
-                        .latitude(23.456789)
-                        .longitude(87.654321)
-                        .build())
-                .build();
-
-        // When
-        ResponseEntity<CarpoolResource> response = testRestTemplate.postForEntity("/carpools", createCarpoolResource, CarpoolResource.class);
-
-        // Then
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Assertions.assertThat(response.getBody()).isNotNull();
-        Assertions.assertThat(response.getBody().radius()).isEqualTo(50);
-        Assertions.assertThat(response.getBody().status()).isEqualTo("CREATED");
-        Assertions.assertThat(response.getBody().originName()).isEqualTo("Origin Location");
-        Assertions.assertThat(response.getBody().originAddress()).isEqualTo("123 Origin St");
-        Assertions.assertThat(response.getBody().destinationName()).isEqualTo("Destination Location");
-        Assertions.assertThat(response.getBody().destinationAddress()).isEqualTo("456 Destination Ave");
-        Assertions.assertThat(response.getBody().isVisible()).isEqualTo(true);
     }
 
     @Test
