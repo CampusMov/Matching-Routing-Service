@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.campusmov.platform</groupId>
     <artifactId>matching-routing-service</artifactId>
-    <version>1.4.0-test</version>
+    <version>1.4.0</version>
     <name>Matching-Routing-Service</name>
     <description>Matching-Routing-Service</description>
     <url/>
