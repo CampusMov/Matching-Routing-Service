@@ -97,7 +97,7 @@ class CarpoolCommandServiceImplUnitTest {
         Assertions.assertThat(result).isPresent();
         Mockito.verify(carpoolRepository).existsByDriverIdAndStatusIn(Mockito.eq(cmd.driverId()), Mockito.anyList());
         Mockito.verify(carpoolRepository, Mockito.times(2)).save(Mockito.any(Carpool.class));
-        
+
         Mockito.verify(carpoolRepository, Mockito.atLeast(1)).save(carpoolArgumentCaptor.capture());
         Carpool saved = carpoolArgumentCaptor.getAllValues().get(0);
         Assertions.assertThat(saved.getDriverId()).isEqualTo(cmd.driverId());
