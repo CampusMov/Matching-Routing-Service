@@ -4,10 +4,7 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.application
 import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.CarpoolCompletedPayloadFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.application.internal.outboundservices.transform.CarpoolStartedPayloadFromEntityAssembler;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.aggregates.Carpool;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateCarpoolCommand;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.CreateLinkedPassengerCommand;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.FinishCarpoolCommand;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.StartCarpoolCommand;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.commands.*;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.valueobjects.ECarpoolStatus;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.CarpoolCommandService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.infrastructure.persistence.jpa.repositories.CarpoolRepository;
@@ -68,6 +65,20 @@ public class CarpoolCommandServiceImpl implements CarpoolCommandService {
             var carpoolCompletedPayload = CarpoolCompletedPayloadFromEntityAssembler.fromEntity(finishedCarpool);
             carpoolWebSocketPublisherService.handleCompletedCarpool(carpoolCompletedPayload);
             return Optional.of(finishedCarpool);
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving carpool", e);
+        }
+    }
+
+    @Override
+    public Optional<Carpool> handle(CancelCarpoolCommand command) {
+        Carpool carpool = carpoolRepository
+                .findById(command.carpoolId())
+                .orElseThrow(() -> new IllegalArgumentException("Carpool with ID %s not found".formatted(command.carpoolId())));
+        carpool.cancel();
+        try {
+            var cancelledCarpool = carpoolRepository.save(carpool);
+            return Optional.of(cancelledCarpool);
         } catch (Exception e) {
             throw new RuntimeException("Error saving carpool", e);
         }
