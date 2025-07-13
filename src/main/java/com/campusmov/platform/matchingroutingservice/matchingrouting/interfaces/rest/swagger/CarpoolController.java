@@ -73,4 +73,12 @@ public interface CarpoolController {
             @ApiResponse(responseCode = "404", description = "Carpool not found"),
     })
     ResponseEntity<CarpoolResource> finishCarpool(@PathVariable String carpoolId);
+
+    @PostMapping("/{carpoolId}/cancel")
+    @Operation(summary = "Cancel a carpool", description = "Cancel a carpool")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Carpool cancelled successfully"),
+            @ApiResponse(responseCode = "404", description = "Carpool not found"),
+    })
+    ResponseEntity<CarpoolResource> cancelCarpool(@PathVariable String carpoolId);
 }
