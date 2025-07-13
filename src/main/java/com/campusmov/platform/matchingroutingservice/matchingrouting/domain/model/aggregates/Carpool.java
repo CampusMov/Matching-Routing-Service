@@ -148,6 +148,11 @@ public class Carpool extends AuditableAbstractAggregateRoot<Carpool> {
         this.status = ECarpoolStatus.COMPLETED;
     }
 
+    public void cancel() {
+        if (this.status == ECarpoolStatus.COMPLETED) throw new IllegalArgumentException("Carpool with ID %s is already completed".formatted(this.getId()));
+        this.status = ECarpoolStatus.CANCELLED;
+    }
+
     public Double haversineDistanceMeters(Location loc1, Location loc2) {
         final int EARTH_RADIUS_METERS = 6_371_000;
 
