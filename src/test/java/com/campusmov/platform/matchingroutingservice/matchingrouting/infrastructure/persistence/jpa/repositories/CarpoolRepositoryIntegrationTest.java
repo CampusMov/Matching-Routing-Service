@@ -8,7 +8,6 @@ import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueob
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.ScheduleId;
 import com.campusmov.platform.matchingroutingservice.shared.domain.model.valueobjects.VehicleId;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -27,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Disabled("Skipping until Neo4j configuration issues are resolved")
 class CarpoolRepositoryIntegrationTest {
     @Container
     @ServiceConnection
