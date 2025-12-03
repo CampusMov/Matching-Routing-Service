@@ -6,8 +6,8 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.interfaces.
 public class IntersectionResourceFromEntityAssembler {
     public static IntersectionResource toResourceFromEntity(Intersection intersection) {
         return IntersectionResource.builder()
-                .latitude(intersection.getLocation().getLatitude())
-                .longitude(intersection.getLocation().getLongitude())
+                .latitude(intersection.getLatitude())
+                .longitude(intersection.getLongitude())
                 .build();
     }
 }
