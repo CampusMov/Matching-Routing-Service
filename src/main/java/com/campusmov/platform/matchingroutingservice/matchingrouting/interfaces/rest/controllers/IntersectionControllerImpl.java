@@ -19,11 +19,11 @@ public class IntersectionControllerImpl implements IntersectionController {
     public ResponseEntity<RouteResource> findShortestPathWithDijkstra(CreateRouteResource resource) {
         var intersectionsQuery = CreateFindShortestRouteWithDijkstraQueryFromResourceAssembler.toQueryFromResource(resource);
         var distanceQuery = CreateGetTotalDistanceRouteForShortestRouteWithDijkstraQueryFromResourceAssembler.toQueryFromResource(resource);
+        var durationQuery = CreateGetTotalDurationRouteForShortestRouteWithDijkstraQueryFromResourceAssembler.toQueryFromResource(resource);
         var intersections = intersectionQueryService.handle(intersectionsQuery);
         var distance = intersectionQueryService.handle(distanceQuery);
-        // TODO: Implement duration calculation
-        var duration = 0.0;
-        if (intersectionsQuery == null || distanceQuery == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        var duration = intersectionQueryService.handle(durationQuery);
+        if (intersectionsQuery == null || distanceQuery == null || durationQuery == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         var routeResource = RouteResourceFromEntityAssembler.toResourceFromEntity(intersections, distance, duration);
         return new ResponseEntity<>(routeResource, HttpStatus.OK);
     }
@@ -32,11 +32,11 @@ public class IntersectionControllerImpl implements IntersectionController {
     public ResponseEntity<RouteResource> findShortestPathWithAStar(CreateRouteResource resource) {
         var intersectionsQuery = CreateFindShortestRouteWithAQueryFromResourceAssembler.toQueryFromResource(resource);
         var distanceQuery = CreateGetTotalDistanceRouteForShortestRouteWithAQueryFromResourceAssembler.toQueryFromResource(resource);
+        var durationQuery = CreateGetTotalDurationRouteForShortestRouteWithAQueryFromResourceAssembler.toQueryFromResource(resource);
         var intersections = intersectionQueryService.handle(intersectionsQuery);
         var distance = intersectionQueryService.handle(distanceQuery);
-        // TODO: Implement duration calculation
-        var duration = 0.0;
-        if (intersectionsQuery == null || distanceQuery == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        var duration = intersectionQueryService.handle(durationQuery);
+        if (intersectionsQuery == null || distanceQuery == null || durationQuery == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         var routeResource = RouteResourceFromEntityAssembler.toResourceFromEntity(intersections, distance, duration);
         return new ResponseEntity<>(routeResource, HttpStatus.OK);
     }

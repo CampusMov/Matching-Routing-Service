@@ -58,6 +58,27 @@ public class GoogleMapsRoutingService {
         }
     }
 
+    public Double calculateRouteDuration(Double startLat, Double startLng, Double endLat, Double endLng) {
+        try {
+            DirectionsResult result = DirectionsApi.newRequest(geoApiContext)
+                    .origin(new LatLng(startLat, startLng))
+                    .destination(new LatLng(endLat, endLng))
+                    .mode(TravelMode.DRIVING)
+                    .await();
+
+            if (result.routes.length > 0) {
+                long durationInSeconds = 0;
+                for (DirectionsLeg leg : result.routes[0].legs) {
+                    durationInSeconds += leg.duration.inSeconds;
+                }
+                return (double) durationInSeconds;
+            }
+            return 0.0;
+        } catch (Exception e) {
+            throw new RuntimeException("Error calculating route duration with Google Maps", e);
+        }
+    }
+
     private Collection<Intersection> convertToIntersections(DirectionsRoute route) {
         List<Intersection> intersections = new ArrayList<>();
         int stepCount = 0;

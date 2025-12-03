@@ -5,6 +5,8 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mode
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.FindShortestRouteWithDijkstraQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetTotalDistanceRouteForShortestRouteWithAQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetTotalDistanceRouteForShortestRouteWithDijkstraQuery;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetTotalDurationRouteForShortestRouteWithAQuery;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetTotalDurationRouteForShortestRouteWithDijkstraQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.IntersectionQueryService;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.infrastructure.persistence.googlemaps.services.GoogleMapsRoutingService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +52,26 @@ public class IntersectionQueryServiceImpl implements IntersectionQueryService {
     @Override
     public Double handle(GetTotalDistanceRouteForShortestRouteWithDijkstraQuery query) {
         return googleMapsRoutingService.calculateRouteDistance(
+                query.startLatitude(),
+                query.startLongitude(),
+                query.endLatitude(),
+                query.endLongitude()
+        );
+    }
+
+    @Override
+    public Double handle(GetTotalDurationRouteForShortestRouteWithAQuery query) {
+        return googleMapsRoutingService.calculateRouteDuration(
+                query.startLatitude(),
+                query.startLongitude(),
+                query.endLatitude(),
+                query.endLongitude()
+        );
+    }
+
+    @Override
+    public Double handle(GetTotalDurationRouteForShortestRouteWithDijkstraQuery query) {
+        return googleMapsRoutingService.calculateRouteDuration(
                 query.startLatitude(),
                 query.startLongitude(),
                 query.endLatitude(),
