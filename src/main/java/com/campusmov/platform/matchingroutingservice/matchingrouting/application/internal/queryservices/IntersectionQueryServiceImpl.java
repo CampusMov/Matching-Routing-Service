@@ -5,8 +5,10 @@ import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.mode
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.FindShortestRouteWithDijkstraQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetTotalDistanceRouteForShortestRouteWithAQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetTotalDistanceRouteForShortestRouteWithDijkstraQuery;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetTotalDurationRouteForShortestRouteWithAQuery;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.model.queries.GetTotalDurationRouteForShortestRouteWithDijkstraQuery;
 import com.campusmov.platform.matchingroutingservice.matchingrouting.domain.services.IntersectionQueryService;
-import com.campusmov.platform.matchingroutingservice.matchingrouting.infrastructure.persistence.neo4j.repositories.IntersectionRepository;
+import com.campusmov.platform.matchingroutingservice.matchingrouting.infrastructure.persistence.googlemaps.services.GoogleMapsRoutingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +17,11 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Service
 public class IntersectionQueryServiceImpl implements IntersectionQueryService {
-    private final IntersectionRepository intersectionRepository;
+    private final GoogleMapsRoutingService googleMapsRoutingService;
 
     @Override
     public Collection<Intersection> handle(FindShortestRouteWithAQuery query) {
-        return intersectionRepository.findAStarRoute(
+        return googleMapsRoutingService.findRoute(
                 query.startLatitude(),
                 query.startLongitude(),
                 query.endLatitude(),
@@ -29,7 +31,7 @@ public class IntersectionQueryServiceImpl implements IntersectionQueryService {
 
     @Override
     public Collection<Intersection> handle(FindShortestRouteWithDijkstraQuery query) {
-        return intersectionRepository.findDijkstraRoute(
+        return googleMapsRoutingService.findRoute(
                 query.startLatitude(),
                 query.startLongitude(),
                 query.endLatitude(),
@@ -39,7 +41,7 @@ public class IntersectionQueryServiceImpl implements IntersectionQueryService {
 
     @Override
     public Double handle(GetTotalDistanceRouteForShortestRouteWithAQuery query) {
-        return intersectionRepository.calculateAStarRouteDistance(
+        return googleMapsRoutingService.calculateRouteDistance(
                 query.startLatitude(),
                 query.startLongitude(),
                 query.endLatitude(),
@@ -49,7 +51,27 @@ public class IntersectionQueryServiceImpl implements IntersectionQueryService {
 
     @Override
     public Double handle(GetTotalDistanceRouteForShortestRouteWithDijkstraQuery query) {
-        return intersectionRepository.calculateDijkstraRouteDistance(
+        return googleMapsRoutingService.calculateRouteDistance(
+                query.startLatitude(),
+                query.startLongitude(),
+                query.endLatitude(),
+                query.endLongitude()
+        );
+    }
+
+    @Override
+    public Double handle(GetTotalDurationRouteForShortestRouteWithAQuery query) {
+        return googleMapsRoutingService.calculateRouteDuration(
+                query.startLatitude(),
+                query.startLongitude(),
+                query.endLatitude(),
+                query.endLongitude()
+        );
+    }
+
+    @Override
+    public Double handle(GetTotalDurationRouteForShortestRouteWithDijkstraQuery query) {
+        return googleMapsRoutingService.calculateRouteDuration(
                 query.startLatitude(),
                 query.startLongitude(),
                 query.endLatitude(),
